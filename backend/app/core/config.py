@@ -10,7 +10,14 @@ class Settings(BaseSettings):
 
     @property
     def allowed_origins_list(self) -> list[str]:
-        return json.loads(self.ALLOWED_ORIGINS)
+        raw = self.ALLOWED_ORIGINS.strip()
+        # JSON 배열 형태면 파싱, 아니면 콤마 구분
+        if raw.startswith("["):
+            try:
+                return json.loads(raw)
+            except json.JSONDecodeError:
+                pass
+        return [o.strip().strip('"').strip("'") for o in raw.split(",") if o.strip()]
 
     class Config:
         env_file = ".env"
