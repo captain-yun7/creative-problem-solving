@@ -109,7 +109,30 @@ ALLOWED_ORIGINS=["http://localhost:3000","http://localhost:5173"]
 VITE_API_URL=http://localhost:8000
 ```
 
+## DB 스키마 (4개 테이블)
+- `sessions` — 세션 정보 (assignment_text, user_id)
+- `conversations` — 대화 로그 (role, message, cps_stage, metacog_elements, response_depth)
+- `session_metrics` — 세션 지표 (단계별 턴, 응답 깊이 분포, 메타인지 빈도)
+- `stage_transitions` — 단계 전환 이력 (from_stage, to_stage, reason)
+
+## Gemini 응답 구조
+```json
+{
+  "current_stage": "understanding | generation | execution",
+  "detected_state": "상태 진단 결과",
+  "detected_metacog_needs": ["Knowledge | Monitoring | Control"],
+  "response_depth": "shallow | medium | deep",
+  "empathy": "공감 (1문장)",
+  "diagnosis": "진단 (1문장)",
+  "question": "촉진 질문 1개",
+  "action_prompt": "재수행 유도",
+  "should_transition": false,
+  "reasoning": "내부 추론 근거"
+}
+```
+
 ## 참고
 - 기획서: docs/기획서.md
 - 요구사항 원본: docs/요구사항/
 - 프롬프트 전략: backend/app/services/gemini.py (SYSTEM_PROMPT)
+- Frontend 원본: creative-solver-ai.zip (AI Studio에서 생성된 프로토타입)
