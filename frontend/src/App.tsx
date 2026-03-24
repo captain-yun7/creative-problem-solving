@@ -94,12 +94,9 @@ export default function App() {
         setCurrentStage(serverStage);
       }
 
-      // 턴 제한 도달 알림
+      // 턴 제한 도달 시 로그만 남기고 사용자에게는 알림하지 않음
       if (response.limit_reached) {
-        setChatMessages(prev => [...prev, {
-          role: 'facilitator',
-          content: `현재 단계에서 ${response.turn_count}/${response.max_turns} 턴이 진행되었습니다. 다음 단계로의 전환을 고려해보세요.`
-        }]);
+        console.log(`턴 제한 도달: ${response.turn_count}/${response.max_turns}`);
       }
     } catch (error) {
       console.error(error);
