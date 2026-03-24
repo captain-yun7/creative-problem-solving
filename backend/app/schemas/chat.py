@@ -23,6 +23,7 @@ class ScaffoldingData(BaseModel):
     current_stage: str
     detected_metacog_needs: list[str]
     response_depth: str
+    hint: str = ""
     should_transition: bool
     reasoning: str
 

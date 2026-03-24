@@ -154,13 +154,17 @@ async def send_message(
                     metric.current_stage = current_stage
                     await db.commit()
 
-    # 9. 에이전트 응답 구성 (4단 포맷)
-    agent_message = "\n\n".join([
+    # 9. 에이전트 응답 구성 (5단 포맷: 공감→진단→질문→힌트→재수행유도)
+    hint_raw = scaffolding.get("hint", "")
+    hint_text = f"💡 **힌트:** {hint_raw}" if hint_raw else ""
+
+    agent_message = "\n\n".join(filter(None, [
         scaffolding.get("empathy", ""),
         scaffolding.get("diagnosis", ""),
         scaffolding.get("question", ""),
+        hint_text,
         scaffolding.get("action_prompt", ""),
-    ]).strip()
+    ])).strip()
 
     # 10. 에이전트 메시지 저장
     response_depth = scaffolding.get("response_depth", "medium")
@@ -187,6 +191,7 @@ async def send_message(
             current_stage=current_stage,
             detected_metacog_needs=metacog_needs,
             response_depth=response_depth,
+            hint=scaffolding.get("hint", ""),
             should_transition=scaffolding.get("should_transition", False),
             reasoning=scaffolding.get("reasoning", ""),
         ),
